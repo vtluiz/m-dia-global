@@ -1,0 +1,19 @@
+
+### 2. `.gitignore`
+
+O arquivo `.gitignore` é importante para evitar que arquivos desnecessários sejam adicionados ao seu repositório, como arquivos temporários ou ambientes virtuais. Aqui está um exemplo básico para o seu projeto:
+
+```bash
+# Ignorar arquivos de Python compilados
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignorar ambientes virtuais
+venv/
+env/
+
+# Ignorar arquivos temporários
+*.swp
+*.bak
+*.log
