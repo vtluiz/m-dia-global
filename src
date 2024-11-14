@@ -1,0 +1,118 @@
+import tkinter as tk
+from tkinter import messagebox
+
+# Função para calcular a média geral
+def calcular_media_geral():
+    total_pontos = 0
+    total_disciplinas = 16  # Total de disciplinas, agora fixado em 16
+    
+    for disciplina, (entry_nota1, entry_nota2) in entries_disciplinas.items():
+        try:
+            nota1 = float(entry_nota1.get())
+            nota2 = float(entry_nota2.get())
+            total_pontos += (nota1 + nota2)
+        except ValueError:
+            continue  # Se a nota não for válida, ignoramos essa disciplina por enquanto
+
+    # Calculando a média geral dividindo pela quantidade total de disciplinas (16)
+    media_geral = total_pontos / total_disciplinas if total_disciplinas > 0 else 0
+
+    # Exibindo a mensagem de status da aprovação geral
+    if total_pontos >= 288:
+        messagebox.showinfo("Aprovação Geral", f"Parabéns! Você foi aprovado no geral com {total_pontos:.2f} pontos.\nSua média geral é: {media_geral:.2f}")
+    else:
+        pontos_faltando = 288 - total_pontos
+        messagebox.showinfo("Atenção", f"Você precisa de mais {pontos_faltando:.2f} pontos para alcançar 288 pontos no total.\nSua média geral é: {media_geral:.2f}")
+
+# Função para calcular a média necessária por disciplina
+def calcular_media_disciplina(disciplina, entry_nota1, entry_nota2):
+    try:
+        nota1 = float(entry_nota1.get())
+        nota2 = float(entry_nota2.get())
+        soma_notas = nota1 + nota2
+        media_exigida = 6.0
+        nota_necessaria = media_exigida * 3 - soma_notas
+
+        # Verificando se o aluno já atingiu a média acima de 18
+        if soma_notas >= 18.0:
+            mensagem = f"Parabéns! Você já foi aprovado em {disciplina} com um total de {soma_notas:.2f} pontos!"
+            messagebox.showinfo(f"Resultado - {disciplina}", mensagem)
+        elif nota_necessaria <= 10:
+            if nota_necessaria <= 3:
+                mensagem = f"Para {disciplina}: Você precisa de uma boa nota no terceiro trimestre ({nota_necessaria:.2f}). Vamos lá, você consegue!"
+            elif nota_necessaria <= 6:
+                mensagem = f"Para {disciplina}: Falta pouco! Você precisa de {nota_necessaria:.2f} no terceiro trimestre para alcançar sua meta!"
+            else:
+                mensagem = f"Para {disciplina}: Parabéns! Você só precisa de {nota_necessaria:.2f} no último trimestre para ser aprovado!"
+            messagebox.showinfo(f"Resultado - {disciplina}", mensagem)
+        else:
+            messagebox.showwarning("Nota impossível", f"A nota necessária em {disciplina} excede 10! Verifique suas notas.")
+    except ValueError:
+        messagebox.showerror("Erro", f"Por favor, insira apenas números válidos nas notas de {disciplina}.")
+
+# Configuração da interface gráfica
+root = tk.Tk()
+root.title("Cálculo da Nota Necessária")
+root.geometry("700x800")
+
+# Seção para o cálculo geral
+label_instrucao = tk.Label(root, text="Digite as notas gerais dos dois primeiros trimestres:")
+label_instrucao.pack(pady=10)
+
+label_nota1 = tk.Label(root, text="Nota do 1º Trimestre:")
+label_nota1.pack()
+entry_nota1 = tk.Entry(root)
+entry_nota1.pack(pady=5)
+
+label_nota2 = tk.Label(root, text="Nota do 2º Trimestre:")
+label_nota2.pack()
+entry_nota2 = tk.Entry(root)
+entry_nota2.pack(pady=5)
+
+# Botão para calcular a média geral
+btn_calcular_geral = tk.Button(root, text="Consultar Aprovação Geral", command=calcular_media_geral)
+btn_calcular_geral.pack(pady=20)
+
+# Tabela para cálculo das disciplinas individuais
+label_tabela = tk.Label(root, text="Cálculo de Nota Necessária por Disciplina:")
+label_tabela.pack(pady=10)
+
+disciplinas = [
+    "Matemática", "Português", "Geografia", "Física", "Biologia",
+    "Inglês", "Espanhol", "Química", "Educação Física", "História",
+    "Filosofia", "Sociologia", "Artes", "Experimentos em práticas investigativas"
+]
+
+# Dicionário para armazenar os campos de entrada das notas por disciplina
+entries_disciplinas = {}
+
+# Loop para criar os campos de entrada e botões de cálculo para cada disciplina
+for disciplina in disciplinas:
+    frame_disciplina = tk.Frame(root)
+    frame_disciplina.pack(pady=5, fill="x")
+
+    label_disciplina = tk.Label(frame_disciplina, text=disciplina, width=15, anchor="w")
+    label_disciplina.pack(side="left", padx=5)
+
+    label_nota1 = tk.Label(frame_disciplina, text="Nota 1:")
+    label_nota1.pack(side="left")
+    entry_nota1_disc = tk.Entry(frame_disciplina, width=5)
+    entry_nota1_disc.pack(side="left", padx=5)
+
+    label_nota2 = tk.Label(frame_disciplina, text="Nota 2:")
+    label_nota2.pack(side="left")
+    entry_nota2_disc = tk.Entry(frame_disciplina, width=5)
+    entry_nota2_disc.pack(side="left", padx=5)
+
+    btn_calcular_disciplina = tk.Button(
+        frame_disciplina,
+        text="Calcular",
+        command=lambda d=disciplina, e1=entry_nota1_disc, e2=entry_nota2_disc: calcular_media_disciplina(d, e1, e2)
+    )
+    btn_calcular_disciplina.pack(side="left", padx=10)
+
+    # Armazenando as entradas em um dicionário para referência
+    entries_disciplinas[disciplina] = (entry_nota1_disc, entry_nota2_disc)
+
+# Iniciar a interface gráfica
+root.mainloop()
